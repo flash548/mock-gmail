@@ -4,6 +4,10 @@ import { DataContext } from './Context'
 
 function MessagesView(props) {
     const context = React.useContext(DataContext);
+
+
+    // I filter my own messages here since I downloaded and cached ALL of them on the App didMount()
+    //  looking back I could have used the API search/query feature here!  hindsight 20/10!
     return (
             <div>
                 <div class={'sender-header'}>Sender</div><div class={'subject-header'}>Subject</div>
