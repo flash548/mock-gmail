@@ -6,12 +6,15 @@ function NewMessage(props) {
     return (
 
         <div>
+            <form>
             <table width={'100%'}>
-                <tr><td width={'50%'} align={'left'}>To:</td><td align={'left'}> <input type={'email'} name={'to'}/> </td></tr>
-                <tr><td width={'50%'} align={'left'}>Subject:</td><td align={'left'}> <input type={'textbox'} name={'subject'} /></td></tr>
-                <tr><td colspan={'2'} align={'left'}> <textarea cols={'40'} rows={'20'} name={'body'}/></td></tr>
+                <thead></thead>
+                <tr><td align={'left'}>To:</td><td align={'left'}> <input type={'email'} onChange={context.updateRecipient} name={'to'}/> </td></tr>
+                <tr><td align={'left'}>Subject:</td><td align={'left'}> <input type={'textbox'} onChange={context.updateSubject} name={'subject'} /></td></tr>
+                <tr><td colspan={'2'} align={'left'}> <textarea cols={'40'} rows={'20'} name={'body'} onChange={context.updateBody}/></td></tr>
                 <tr><td  align={'left'}><form><input type='button' onClick={context.sendMessage} value={'Send'}/></form></td><td></td></tr>
             </table>
+            </form>
 
         </div>
 

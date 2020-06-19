@@ -7,7 +7,7 @@ function SearchBar(props) {
 
     return (
         <div>
-                <form action={context.search}>
+                <form onSubmit={context.search}>
                     <input type='search' placeholder={'subject contains'} onChange={context.fieldChanged} id={"searchbox"}/>
                     <input type='button' value='Search' onClick={context.search}/>
                     <br/>                

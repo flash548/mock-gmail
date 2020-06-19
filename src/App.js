@@ -20,16 +20,50 @@ class App extends React.Component {
       fieldChanged: this.fieldChanged,
       search: this.search,
       newMessage: this.newMessage,
-      sendMessage: this.sendMessage
+      sendMessage: this.sendMessage,
+
+      // hacky, but gets data from a new message....
+      updateRecipient: this.updateRecipient,
+      updateSubject: this.updateSubject,
+      updateBody: this.updateBody,
+      newBody: '',
+      newRecipient: '',
+      newSubject: '', 
+      sender: 'christopher.zell@gmail.com'
       }
     }
 
-  fieldChanged = (event) => {
-    this.setState({queryField: event.target.value})
+  updateRecipient = (event) => {
+    this.setState({newRecipient: event.target.value})
+    event.preventDefault()
   }
 
-  sendMessage = (event) => {
-    this.setState({currentMsgId: -1})
+  updateSubject = (event) => {
+    this.setState({newSubject: event.target.value})
+    event.preventDefault()
+  }
+
+  updateBody = (event) => {
+    this.setState({newBody: event.target.value})
+    event.preventDefault()
+  }
+
+  fieldChanged = (event) => {    
+    this.setState({queryField: event.target.value, filter: event.target.value})
+  }
+
+  sendMessage = async (event) => {
+    var newMessage = {sender: this.state.sender, recipient: this.state.newRecipient, subject: this.state.newSubject, message: this.state.newBody}
+    const response = await fetch('http://localhost:3001/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newMessage)
+    });
+    const json = await response.json()  
+    alert('result: ' + json.status + '\nmessage: ' + json.message)
+    this.loadMessages() // do another get
     event.preventDefault()
   }
 
@@ -43,21 +77,30 @@ class App extends React.Component {
   }
 
   search = (event) => {
-    this.setState({filter: this.state.queryField})
+     this.setState({filter: this.state.queryField})
     event.preventDefault()
   }
 
-  async componentDidMount() {
-        const response = await fetch('http://localhost:3001/emails');
-        const json = await response.json()   
-        let emails = []
-        json.forEach((msg) => {
-            emails.push(msg);
-        })
-        console.log(emails)
-        // store all emails
-        this.setState({'emails': emails})
+  handleLeftPaneClick = (event) =>{
+    if (event.target.id === 'LeftPane') {
+      // clear the message preview
+      this.setState({currentMsgId: -1})
+    }
+  }
+  
+  loadMessages = async () => {
+    const response = await fetch('http://localhost:3001/emails');
+    const json = await response.json()   
+    let emails = []
+    json.forEach((msg) => {
+        emails.push(msg);
+    })
+    // store all emails
+    this.setState({'emails': emails, currentMsgId: -1})
+  }
 
+  async componentDidMount() {
+    this.loadMessages()
   }
 
   render() {
@@ -73,7 +116,7 @@ class App extends React.Component {
           </div>          
             {/* Start main content below */}
             <div id={"Main"}>
-              <div id={"LeftPane"}>
+              <div id={"LeftPane"} onClick={this.handleLeftPaneClick}>
                 <div id={"Search"}>
                   <SearchBar />
                 </div><br/>
